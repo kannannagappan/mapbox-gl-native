@@ -7,12 +7,14 @@
 namespace mbgl {
 
 class CollisionBoxVertex;
+class CollisionBoxUniforms;
 
 class CollisionBoxShader : public gl::Shader {
 public:
     CollisionBoxShader(gl::Context&);
 
     using VertexType = CollisionBoxVertex;
+    using UniformsType = CollisionBoxUniforms;
 
     gl::Attribute<int16_t, 2> a_pos     = {"a_pos",     *this};
     gl::Attribute<int16_t, 2> a_extrude = {"a_extrude", *this};

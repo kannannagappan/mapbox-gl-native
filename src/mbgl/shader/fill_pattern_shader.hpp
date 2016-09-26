@@ -7,12 +7,15 @@
 namespace mbgl {
 
 class FillVertex;
+class FillUniforms;
+class FillPatternUniforms;
 
 class FillPatternShader : public gl::Shader {
 public:
     FillPatternShader(gl::Context&, Defines defines = None);
 
     using VertexType = FillVertex;
+    using UniformsType = std::tuple<FillUniforms, FillPatternUniforms>;
 
     gl::Attribute<int16_t, 2> a_pos = {"a_pos", *this};
 

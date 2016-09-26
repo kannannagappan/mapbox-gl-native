@@ -130,9 +130,9 @@ const constexpr DepthRange::Type DepthRange::Default;
 
 void DepthRange::Set(const Type& value) {
 #if MBGL_USE_GLES2
-    MBGL_CHECK_ERROR(glDepthRangef(value.near, value.far));
+    MBGL_CHECK_ERROR(glDepthRangef(value.min, value.max));
 #else
-    MBGL_CHECK_ERROR(glDepthRange(value.near, value.far));
+    MBGL_CHECK_ERROR(glDepthRange(value.min, value.max));
 #endif
 }
 

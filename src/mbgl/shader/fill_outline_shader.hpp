@@ -8,12 +8,15 @@
 namespace mbgl {
 
 class FillVertex;
+class FillUniforms;
+class FillColorUniforms;
 
 class FillOutlineShader : public gl::Shader {
 public:
     FillOutlineShader(gl::Context&, Defines defines = None);
 
     using VertexType = FillVertex;
+    using UniformsType = std::tuple<FillUniforms, FillColorUniforms>;
 
     gl::Attribute<int16_t, 2> a_pos = {"a_pos", *this};
 

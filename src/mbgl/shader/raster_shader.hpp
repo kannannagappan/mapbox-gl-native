@@ -7,12 +7,14 @@
 namespace mbgl {
 
 class RasterVertex;
+class RasterUniforms;
 
 class RasterShader : public gl::Shader {
 public:
     RasterShader(gl::Context&, Defines defines = None);
 
     using VertexType = RasterVertex;
+    using UniformsType = RasterUniforms;
 
     gl::Attribute<int16_t, 2>  a_pos         = { "a_pos",         *this };
     gl::Attribute<uint16_t, 2> a_texture_pos = { "a_texture_pos", *this };

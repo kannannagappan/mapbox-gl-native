@@ -2,6 +2,7 @@
 
 #include <mbgl/gl/types.hpp>
 #include <mbgl/util/color.hpp>
+#include <mbgl/util/range.hpp>
 
 namespace mbgl {
 namespace gl {
@@ -97,18 +98,11 @@ constexpr bool operator!=(const StencilOp::Type& a, const StencilOp::Type& b) {
 }
 
 struct DepthRange {
-    struct Type {
-        float near;
-        float far;
-    };
+    using Type = Range<float>;
     static const constexpr Type Default = { 0, 1 };
     static void Set(const Type&);
     static Type Get();
 };
-
-constexpr bool operator!=(const DepthRange::Type& a, const DepthRange::Type& b) {
-    return a.near != b.near || a.far != b.far;
-}
 
 struct DepthTest {
     using Type = bool;

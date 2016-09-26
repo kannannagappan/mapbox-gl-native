@@ -8,12 +8,15 @@
 namespace mbgl {
 
 class LineVertex;
+class LineUniforms;
+class LineUniformsColor;
 
 class LineShader : public gl::Shader {
 public:
     LineShader(gl::Context&, Defines defines = None);
 
     using VertexType = LineVertex;
+    using UniformsType = std::tuple<LineUniforms, LineUniformsColor>;
 
     gl::Attribute<int16_t, 2> a_pos  = { "a_pos",  *this };
     gl::Attribute<uint8_t, 4> a_data = { "a_data", *this };

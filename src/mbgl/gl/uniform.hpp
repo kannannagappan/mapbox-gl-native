@@ -57,5 +57,11 @@ private:
     UniformLocation location;
 };
 
+class UniformBinding {
+public:
+};
+
+template <class Shader, class Vertex> struct UniformBindings;
+
 } // namespace gl
 } // namespace mbgl

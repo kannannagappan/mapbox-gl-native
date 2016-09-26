@@ -8,12 +8,14 @@
 namespace mbgl {
 
 class CircleVertex;
+class CircleUniforms;
 
 class CircleShader : public gl::Shader {
 public:
     CircleShader(gl::Context&, Defines defines = None);
 
     using VertexType = CircleVertex;
+    using UniformsType = CircleUniforms;
 
     gl::Attribute<int16_t, 2> a_pos = {"a_pos", *this};
 

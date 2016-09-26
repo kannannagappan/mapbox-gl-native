@@ -7,12 +7,15 @@
 namespace mbgl {
 
 class LineVertex;
+class LineUniforms;
+class LineUniformsPattern;
 
 class LinePatternShader : public gl::Shader {
 public:
     LinePatternShader(gl::Context&, Defines defines = None);
 
     using VertexType = LineVertex;
+    using UniformsType = std::tuple<LineUniforms, LineUniformsPattern>;
 
     gl::Attribute<int16_t, 2> a_pos  = { "a_pos",  *this };
     gl::Attribute<uint8_t, 4> a_data = { "a_data", *this };
@@ -28,7 +31,6 @@ public:
     gl::Uniform<std::array<float, 2>> u_pattern_tl_b        = {"u_pattern_tl_b",        *this};
     gl::Uniform<std::array<float, 2>> u_pattern_br_b        = {"u_pattern_br_b",        *this};
     gl::Uniform<float>                u_ratio               = {"u_ratio",               *this};
-    gl::Uniform<float>                u_point               = {"u_point",               *this};
     gl::Uniform<float>                u_blur                = {"u_blur",                *this};
     gl::Uniform<float>                u_fade                = {"u_fade",                *this};
     gl::Uniform<float>                u_opacity             = {"u_opacity",             *this};
