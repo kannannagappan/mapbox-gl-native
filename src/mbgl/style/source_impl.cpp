@@ -22,7 +22,29 @@
 namespace mbgl {
 namespace style {
 
+namespace {
+
+class TilePoint : public Point<int16_t>
+{
+public:
+    TilePoint(int16_t x_, int16_t y_) : Point<int16_t>(x_, y_) {}
+
+    static TilePoint fromTileCoordinate(const UnwrappedTileID& tileID, const Point<double>& p) {
+        auto zoomedCoord = TileCoordinate { p, 0 }.zoomTo(tileID.canonical.z);
+        return {
+            int16_t(util::clamp<int64_t>((zoomedCoord.p.x - tileID.canonical.x - tileID.wrap * std::pow(2, tileID.canonical.z)) * util::EXTENT,
+                        std::numeric_limits<int16_t>::min(),
+                        std::numeric_limits<int16_t>::max())),
+            int16_t(util::clamp<int64_t>((zoomedCoord.p.y - tileID.canonical.y) * util::EXTENT,
+                        std::numeric_limits<int16_t>::min(),
+                        std::numeric_limits<int16_t>::max()))
+        };
+    }
+};
+
 static SourceObserver nullObserver;
+
+} // anonymous namespace
 
 Source::Impl::Impl(SourceType type_, std::string id_, Source& base_)
     : type(type_),
@@ -181,18 +203,6 @@ void Source::Impl::reloadTiles() {
     }
 }
 
-static Point<int16_t> coordinateToTilePoint(const UnwrappedTileID& tileID, const Point<double>& p) {
-    auto zoomedCoord = TileCoordinate { p, 0 }.zoomTo(tileID.canonical.z);
-    return {
-        int16_t(util::clamp<int64_t>((zoomedCoord.p.x - tileID.canonical.x - tileID.wrap * std::pow(2, tileID.canonical.z)) * util::EXTENT,
-                    std::numeric_limits<int16_t>::min(),
-                    std::numeric_limits<int16_t>::max())),
-        int16_t(util::clamp<int64_t>((zoomedCoord.p.y - tileID.canonical.y) * util::EXTENT,
-                    std::numeric_limits<int16_t>::min(),
-                    std::numeric_limits<int16_t>::max()))
-    };
-}
-
 std::unordered_map<std::string, std::vector<Feature>> Source::Impl::queryRenderedFeatures(const QueryParameters& parameters) const {
     std::unordered_map<std::string, std::vector<Feature>> result;
     if (renderTiles.empty()) {
@@ -215,8 +225,8 @@ std::unordered_map<std::string, std::vector<Feature>> Source::Impl::queryRendere
     for (const auto& tilePtr : renderTiles) {
         const RenderTile& tile = tilePtr.second;
 
-        Point<int16_t> tileSpaceBoundsMin = coordinateToTilePoint(tile.id, box.min);
-        Point<int16_t> tileSpaceBoundsMax = coordinateToTilePoint(tile.id, box.max);
+        TilePoint tileSpaceBoundsMin = TilePoint::fromTileCoordinate(tile.id, box.min);
+        TilePoint tileSpaceBoundsMax = TilePoint::fromTileCoordinate(tile.id, box.max);
 
         if (tileSpaceBoundsMin.x >= util::EXTENT || tileSpaceBoundsMin.y >= util::EXTENT ||
             tileSpaceBoundsMax.x < 0 || tileSpaceBoundsMax.y < 0) continue;
@@ -224,7 +234,7 @@ std::unordered_map<std::string, std::vector<Feature>> Source::Impl::queryRendere
         GeometryCoordinates tileSpaceQueryGeometry;
 
         for (const auto& c : queryGeometry) {
-            tileSpaceQueryGeometry.push_back(coordinateToTilePoint(tile.id, c));
+            tileSpaceQueryGeometry.push_back(TilePoint::fromTileCoordinate(tile.id, c));
         }
 
         tile.tile.queryRenderedFeatures(result,
