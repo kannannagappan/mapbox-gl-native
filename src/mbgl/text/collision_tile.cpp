@@ -3,6 +3,8 @@
 #include <mbgl/util/constants.hpp>
 #include <mbgl/util/math.hpp>
 
+#include <mapbox/geometry/for_each_point.hpp>
+
 #include <cmath>
 
 namespace mbgl {
@@ -153,14 +155,28 @@ Box CollisionTile::getTreeBox(const Point<float>& anchor, const CollisionBox& bo
     };
 }
 
-std::vector<IndexedSubfeature> CollisionTile::queryRenderedSymbols(const mapbox::geometry::box<int16_t>& box, const float scale) {
+std::vector<IndexedSubfeature> CollisionTile::queryRenderedSymbols(const GeometryCollection& queryGeometry, const float scale) {
 
     std::vector<IndexedSubfeature> result;
+    if (queryGeometry.empty()) return result;
+
     std::unordered_map<std::string, std::unordered_set<std::size_t>> sourceLayerFeatures;
 
-    auto anchor = util::matrixMultiply(rotationMatrix, convertPoint<float>(box.min));
-    CollisionBox queryBox(anchor, 0, 0, box.max.x - box.min.x, box.max.y - box.min.y, scale);
-    auto predicates = bgi::intersects(getTreeBox(anchor, queryBox));
+    mapbox::geometry::box<float> box {
+        { std::numeric_limits<float>::max(), std::numeric_limits<float>::max() },
+        { std::numeric_limits<float>::lowest(), std::numeric_limits<float>::lowest() }
+    };
+
+    mapbox::geometry::for_each_point(queryGeometry, [&] (const mapbox::geometry::point<int16_t>& point) {
+        auto rotated = util::matrixMultiply(rotationMatrix, convertPoint<float>(point));
+        if (box.min.x > rotated.x) box.min.x = rotated.x;
+        if (box.min.y > rotated.y) box.min.y = rotated.y;
+        if (box.max.x < rotated.x) box.max.x = rotated.x;
+        if (box.max.y < rotated.y) box.max.y = rotated.y;
+    });
+
+    CollisionBox queryBox(box.min, 0, 0, box.max.x - box.min.x, box.max.y - box.min.y, scale);
+    auto predicates = bgi::intersects(getTreeBox(box.min, queryBox));
 
     auto fn = [&] (const Tree& tree_) {
         for (auto it = tree_.qbegin(predicates); it != tree_.qend(); ++it) {
@@ -170,7 +186,7 @@ std::vector<IndexedSubfeature> CollisionTile::queryRenderedSymbols(const mapbox:
             auto& seenFeatures = sourceLayerFeatures[indexedFeature.sourceLayerName];
             if (seenFeatures.find(indexedFeature.index) == seenFeatures.end()) {
                 auto blockingAnchor = util::matrixMultiply(rotationMatrix, blocking.anchor);
-                float minPlacementScale = findPlacementScale(minScale, anchor, queryBox, blockingAnchor, blocking);
+                float minPlacementScale = findPlacementScale(minScale, box.min, queryBox, blockingAnchor, blocking);
                 if (minPlacementScale >= scale) {
                     seenFeatures.insert(indexedFeature.index);
                     result.push_back(indexedFeature);
