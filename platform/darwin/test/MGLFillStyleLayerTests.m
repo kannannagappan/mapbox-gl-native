@@ -21,7 +21,7 @@ MGLFillStyleLayer *layer = [[MGLFillStyleLayer alloc] initWithLayerIdentifier:@"
     layer.fillColor = [MGLRuntimeStylingHelper testColor];
     layer.fillOutlineColor = [MGLRuntimeStylingHelper testColor];
     layer.fillTranslate = [MGLRuntimeStylingHelper testOffset];
-    layer.fillTranslateAnchor = [MGLRuntimeStylingHelper testEnum:MGLFillStyleLayerFillTranslateAnchorViewport type:@encode(MGLFillStyleLayerFillTranslateAnchor)];
+    layer.fillTranslateAnchor = [MGLRuntimeStylingHelper testEnum:MGLFillTranslateAnchorViewport type:@encode(MGLFillTranslateAnchor)];
     layer.fillPattern = [MGLRuntimeStylingHelper testString];
 
     MGLFillStyleLayer *gLayer = [self.mapView.style layerWithIdentifier:@"layerID"];
@@ -30,7 +30,7 @@ MGLFillStyleLayer *layer = [[MGLFillStyleLayer alloc] initWithLayerIdentifier:@"
     XCTAssertEqualObjects(gLayer.fillColor, [MGLRuntimeStylingHelper testColor]);
     XCTAssertEqualObjects(gLayer.fillOutlineColor, [MGLRuntimeStylingHelper testColor]);
     XCTAssertEqualObjects(gLayer.fillTranslate, [MGLRuntimeStylingHelper testOffset]);
-    XCTAssert([(NSValue *)gLayer.fillTranslateAnchor isEqualToValue:[MGLRuntimeStylingHelper testEnum:MGLFillStyleLayerFillTranslateAnchorViewport type:@encode(MGLFillStyleLayerFillTranslateAnchor)]], @"%@ is not equal to %@", gLayer.fillTranslateAnchor, [MGLRuntimeStylingHelper testEnum:MGLFillStyleLayerFillTranslateAnchorViewport type:@encode(MGLFillStyleLayerFillTranslateAnchor)]);
+    XCTAssert([(NSValue *)gLayer.fillTranslateAnchor isEqualToValue:[MGLRuntimeStylingHelper testEnum:MGLFillTranslateAnchorViewport type:@encode(MGLFillTranslateAnchor)]], @"%@ is not equal to %@", gLayer.fillTranslateAnchor, [MGLRuntimeStylingHelper testEnum:MGLFillTranslateAnchorViewport type:@encode(MGLFillTranslateAnchor)]);
     XCTAssertEqualObjects(gLayer.fillPattern, [MGLRuntimeStylingHelper testString]);
 
     layer.fillAntialias = [MGLRuntimeStylingHelper testBoolFunction];
@@ -38,7 +38,7 @@ MGLFillStyleLayer *layer = [[MGLFillStyleLayer alloc] initWithLayerIdentifier:@"
     layer.fillColor = [MGLRuntimeStylingHelper testColorFunction];
     layer.fillOutlineColor = [MGLRuntimeStylingHelper testColorFunction];
     layer.fillTranslate = [MGLRuntimeStylingHelper testOffsetFunction];
-    layer.fillTranslateAnchor = [MGLRuntimeStylingHelper testEnumFunction:MGLFillStyleLayerFillTranslateAnchorViewport type:@encode(MGLFillStyleLayerFillTranslateAnchor)];
+    layer.fillTranslateAnchor = [MGLRuntimeStylingHelper testEnumFunction:MGLFillTranslateAnchorViewport type:@encode(MGLFillTranslateAnchor)];
     layer.fillPattern = [MGLRuntimeStylingHelper testStringFunction];
 
     XCTAssertEqualObjects(gLayer.fillAntialias, [MGLRuntimeStylingHelper testBoolFunction]);
@@ -46,7 +46,7 @@ MGLFillStyleLayer *layer = [[MGLFillStyleLayer alloc] initWithLayerIdentifier:@"
     XCTAssertEqualObjects(gLayer.fillColor, [MGLRuntimeStylingHelper testColorFunction]);
     XCTAssertEqualObjects(gLayer.fillOutlineColor, [MGLRuntimeStylingHelper testColorFunction]);
     XCTAssertEqualObjects(gLayer.fillTranslate, [MGLRuntimeStylingHelper testOffsetFunction]);
-    XCTAssertEqualObjects(gLayer.fillTranslateAnchor, [MGLRuntimeStylingHelper testEnumFunction:MGLFillStyleLayerFillTranslateAnchorViewport type:@encode(MGLFillStyleLayerFillTranslateAnchor)]);
+    XCTAssertEqualObjects(gLayer.fillTranslateAnchor, [MGLRuntimeStylingHelper testEnumFunction:MGLFillTranslateAnchorViewport type:@encode(MGLFillTranslateAnchor)]);
     XCTAssertEqualObjects(gLayer.fillPattern, [MGLRuntimeStylingHelper testStringFunction]);
 }
 
