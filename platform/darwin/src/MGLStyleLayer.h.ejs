@@ -17,6 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 <% if (property.type == "enum") { -%>
 /**
  <%- propertyDoc(property.name, property, type) %>
+ 
+ Values of this type are used in the `<%- camelizeWithLeadingLowercase(property.name) %>` property of `MGL<%- camelize(type) %>StyleLayer`.
  */
 typedef NS_ENUM(NSUInteger, MGL<%- camelize(property.name) %>) {
 <% for (const value in property.values) { -%>
@@ -33,6 +35,8 @@ typedef NS_ENUM(NSUInteger, MGL<%- camelize(property.name) %>) {
 <% if (property.type == "enum") { -%>
 /**
  <%- propertyDoc(property.name, property, type) %>
+ 
+ Values of this type are used in the `<%- camelizeWithLeadingLowercase(property.name) %>` property of `MGL<%- camelize(type) %>StyleLayer`.
  */
 typedef NS_ENUM(NSUInteger, MGL<%- camelize(property.name) %>) {
 <% for (const value in property.values) { -%>
